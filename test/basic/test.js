@@ -9,8 +9,20 @@ gt.test('basic', function () {
 	gt.equal(typeof req.outbound, 'function', 'outbound exists');
 });
 
-gt.test('get outbound', function () {
+gt.test('foo outbound', function () {
 	var out = req.outbound('./foo');
+	gt.equal(typeof out, 'object', 'returns an object');
+	gt.equal(Object.keys(out).length, 1, 'there should be single outbound, not ' + JSON.stringify(out));
+});
+
+gt.test('bar outbound', function () {
+	var out = req.outbound('./bar');
+	gt.equal(typeof out, 'object', 'returns an object');
+	gt.equal(Object.keys(out).length, 0, 'there should be nothing outbound, not ' + JSON.stringify(out));
+});
+
+gt.test('zoo outbound', function () {
+	var out = req.outbound('./zoo');
 	gt.equal(typeof out, 'object', 'returns an object');
 	gt.equal(Object.keys(out).length, 1, 'there should be single outbound, not ' + JSON.stringify(out));
 });

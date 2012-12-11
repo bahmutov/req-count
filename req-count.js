@@ -6,13 +6,10 @@ var detective = require('detective');
 
 var out = {};
 
-function init() {
-	console.log('computing outbound req dependencies');
-	out = {};
-}
-
 function outbound(moduleName) {
 	console.log('computing outbound links starting with', moduleName);
+
+	out = {};
 	visit(moduleName);
 	return out;
 }
@@ -41,6 +38,5 @@ function visit(request, parent) {
 };
 
 module.exports = {
-	init: init,
 	outbound: outbound
 };
