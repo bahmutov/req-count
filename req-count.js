@@ -7,13 +7,14 @@ var detective = require('detective');
 var out = {};
 
 function outbound(moduleName) {
-	console.log('computing outbound links starting with', moduleName);
+	// console.log('computing outbound links starting with', moduleName);
 
 	out = {};
 	visit(moduleName);
 	return out;
 }
 
+// only immediate requires are returned
 function visit(request, parent) {
   var fn;
   try {
@@ -24,16 +25,18 @@ function visit(request, parent) {
   if (!fs.existsSync(fn)) {
     return;
   }
-  console.log(fn);
+  // console.log(fn);
   var src = fs.readFileSync(fn);
   var requires = detective(src);
 
   requires.forEach(function(item) {
-  	out.item = item;
+  	out[item] = item;
+  	/*
     visit(item, {
       id: request,
       filename: fn
     });
+*/
   })
 };
 

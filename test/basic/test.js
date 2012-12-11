@@ -27,4 +27,16 @@ gt.test('zoo outbound', function () {
 	gt.equal(Object.keys(out).length, 1, 'there should be single outbound, not ' + JSON.stringify(out));
 });
 
+gt.test('two outbound', function () {
+	var out = req.outbound('./two');
+	gt.equal(typeof out, 'object', 'returns an object');
+	gt.equal(Object.keys(out).length, 2, 'there should be 2 outbound, not ' + JSON.stringify(out));
+});
+
+gt.test('multiples do not count', function () {
+	var out = req.outbound('./multiples');
+	gt.equal(typeof out, 'object', 'returns an object');
+	gt.equal(Object.keys(out).length, 2, 'there should be 2 outbound, not ' + JSON.stringify(out));
+});
+
 sure.run();
