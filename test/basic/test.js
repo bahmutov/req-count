@@ -1,5 +1,6 @@
 var sure = require('../../node_modules/gt/sure.js');
 var req = require('../../req-count');
+var check = require('../../node_modules/check-types');
 
 sure.init();
 
@@ -11,32 +12,34 @@ gt.test('basic', function () {
 
 gt.test('foo outbound', function () {
 	var out = req.outbound('./foo');
-	gt.equal(typeof out, 'object', 'returns an object');
-	gt.equal(Object.keys(out).length, 1, 'there should be single outbound, not ' + JSON.stringify(out));
+	gt.ok(Array.isArray(out), 'returns an array');
+	gt.equal(out.length, 1, 'there should be single outbound, not ' + JSON.stringify(out));
 });
 
 gt.test('bar outbound', function () {
 	var out = req.outbound('./bar');
-	gt.equal(typeof out, 'object', 'returns an object');
-	gt.equal(Object.keys(out).length, 0, 'there should be nothing outbound, not ' + JSON.stringify(out));
+	gt.ok(Array.isArray(out), 'returns an array');
+	gt.equal(out.length, 1, 'there should be nothing outbound, not ' + JSON.stringify(out));
+	gt.equal(out[0].length, 0, "should be single empty array, not " + JSON.stringify(out));
 });
 
 gt.test('zoo outbound', function () {
 	var out = req.outbound('./zoo');
-	gt.equal(typeof out, 'object', 'returns an object');
-	gt.equal(Object.keys(out).length, 1, 'there should be single outbound, not ' + JSON.stringify(out));
+	gt.ok(Array.isArray(out), 'returns an array');
+	gt.equal(out.length, 1, 'there should be single outbound, not ' + JSON.stringify(out));
 });
 
 gt.test('two outbound', function () {
 	var out = req.outbound('./two');
-	gt.equal(typeof out, 'object', 'returns an object');
-	gt.equal(Object.keys(out).length, 2, 'there should be 2 outbound, not ' + JSON.stringify(out));
+	gt.ok(Array.isArray(out), 'returns an array');
+	gt.equal(out.length, 1, 'there should be 2 outbound, not ' + JSON.stringify(out));
+	gt.equal(out[0].length, 2, 'there should be 2 outbound, not ' + JSON.stringify(out));
 });
 
 gt.test('multiples do not count', function () {
 	var out = req.outbound('./multiples');
-	gt.equal(typeof out, 'object', 'returns an object');
-	gt.equal(Object.keys(out).length, 2, 'there should be 2 outbound, not ' + JSON.stringify(out));
+	gt.ok(Array.isArray(out), 'returns an array');
+	gt.equal(out.length, 1, 'there should be 1 outbound, not ' + JSON.stringify(out));
 });
 
 sure.run();
