@@ -12,7 +12,8 @@
   ],
   "dependencies": {
     "optimist": "*",
-    "check-types": "*"
+    "check-types": "*",
+    "detective": "*"
   },
   "devDependencies": {
       "gt": "*"

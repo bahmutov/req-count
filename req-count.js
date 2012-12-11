@@ -1,10 +1,44 @@
+// node visitor taken from http://kalmanspeier.com/blog/2012/05/16/visit-required-files-in-node-dot-js/
+var fs = require('fs');
+var path = require('path');
+var Module = require('module');
+var detective = require('detective');
+
+var out = {};
+
 function init() {
 	console.log('computing outbound req dependencies');
+	out = {};
 }
 
-function outbound() {
-	console.log('computing outbound links');
+function outbound(moduleName) {
+	console.log('computing outbound links starting with', moduleName);
+	visit(moduleName);
+	return out;
 }
+
+function visit(request, parent) {
+  var fn;
+  try {
+    fn = require.resolve(request);
+  } catch (err) {
+    fn = Module._resolveFilename(request, parent);
+  }
+  if (!fs.existsSync(fn)) {
+    return;
+  }
+  console.log(fn);
+  var src = fs.readFileSync(fn);
+  var requires = detective(src);
+
+  requires.forEach(function(item) {
+  	out.item = item;
+    visit(item, {
+      id: request,
+      filename: fn
+    });
+  })
+};
 
 module.exports = {
 	init: init,
