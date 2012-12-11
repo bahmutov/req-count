@@ -14,6 +14,7 @@ gt.test('foo outbound', function () {
 	var out = req.outbound('./foo');
 	gt.ok(Array.isArray(out), 'returns an array');
 	gt.equal(out.length, 1, 'there should be single outbound, not ' + JSON.stringify(out));
+	gt.equal(out[0].length, 1, "should be single element array, not " + JSON.stringify(out));
 });
 
 gt.test('bar outbound', function () {
@@ -40,6 +41,15 @@ gt.test('multiples do not count', function () {
 	var out = req.outbound('./multiples');
 	gt.ok(Array.isArray(out), 'returns an array');
 	gt.equal(out.length, 1, 'there should be 1 outbound, not ' + JSON.stringify(out));
+	gt.equal(out[0].length, 2, 'there should be 2 outbound, not ' + JSON.stringify(out));
+});
+
+gt.test('foo and bar outbound', function () {
+	var out = req.outbound(['./foo', './bar']);
+	gt.ok(Array.isArray(out), 'returns an array');
+	gt.equal(out.length, 2, 'there should be two outbound, not ' + JSON.stringify(out));
+	gt.equal(out[0].length, 1, "should be single element array, not " + JSON.stringify(out));
+	gt.equal(out[1].length, 0, "should be empty array, not " + JSON.stringify(out));
 });
 
 sure.run();
