@@ -7,20 +7,35 @@ var detective = require('detective');
 var out = [];
 
 // returns an array of immediate reqs, even for a single argument
-function outbound(moduleName) {
+function outboundLinks(modules) {
 	// console.log('computing outbound links starting with', moduleName);
-	if (!Array.isArray(moduleName)) {
-		moduleName = [moduleName];
-	}
+	console.assert(Array.isArray(modules), modules, 'should be an array');
 
-	console.assert(Array.isArray(moduleName), moduleName, 'should be an array');
 	out = [];
-	moduleName.forEach(function(item) {
+	modules.forEach(function(item) {
 		var reqs = visit(item);
 		console.assert(typeof reqs === 'object', 'return should be an object for', item);
 		out.push(Object.keys(reqs));
 	})
 	return out;
+}
+
+// returns object, for each module - array of paths
+function outbound(modules) {
+  console.assert(modules, 'empty modules list');
+  if (!Array.isArray(modules)) {
+    modules = [modules];
+  }
+
+  var uniques = {};
+  modules.forEach(function(item) {
+    uniques[item] = item;
+  });
+  modules = Object.keys(uniques);
+  // console.log('uniques', modules);
+
+  var reqs = outboundLinks(modules);
+  return reqs;
 }
 
 // only immediate requires are returned
@@ -42,12 +57,6 @@ function visit(request, parent) {
 
   requires.forEach(function(item) {
   	reqs[item] = item;
-  	/*
-    visit(item, {
-      id: request,
-      filename: fn
-    });
-*/
   });
 
   return reqs;

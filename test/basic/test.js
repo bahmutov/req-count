@@ -52,4 +52,9 @@ gt.test('foo and bar outbound', function () {
 	gt.equal(out[1].length, 0, "should be empty array, not " + JSON.stringify(out));
 });
 
+gt.test('uniques', function () {
+	var out = req.outbound(['./foo', './foo', './foo']);
+	gt.equal(out.length, 1, '3 identical module names collapsed to 1');
+})
+
 sure.run();
