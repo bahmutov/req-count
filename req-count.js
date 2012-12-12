@@ -35,7 +35,15 @@ function outbound(modules) {
   // console.log('uniques', modules);
 
   var reqs = outboundLinks(modules);
-  return reqs;
+  console.assert(Array.isArray(reqs), 'could not get array for modules', modules);
+  console.assert(reqs.length === modules.length, 'returned wrong number of links for', modules);
+
+  var result = {};
+  reqs.forEach(function(req, index) {
+    var moduleName = modules[index];
+    result[moduleName] = req;
+  });
+  return result;
 }
 
 // only immediate requires are returned
