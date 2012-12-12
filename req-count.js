@@ -5,6 +5,7 @@ var Module = require('module');
 var detective = require('detective');
 
 var out = [];
+var amd = true;
 
 // returns an array of immediate reqs, even for a single argument
 function outboundLinks(modules) {
@@ -13,11 +14,35 @@ function outboundLinks(modules) {
 
 	out = [];
 	modules.forEach(function(item) {
-		var reqs = visit(item);
-		console.assert(typeof reqs === 'object', 'return should be an object for', item);
-		out.push(Object.keys(reqs));
-	})
+    if (amd) {
+      var fullName = path.resolve(item);
+      global.define = function(deps) {
+        if (Array.isArray(deps)) {
+          var uniques = deduplicate(deps);
+          out.push(uniques);
+        }
+      };
+
+      // force loading the module, needed if same module is loaded multiple times
+      delete require.cache[require.resolve(fullName)];
+      require(fullName);
+    } else {
+		  var reqs = visit(item);
+		  console.assert(typeof reqs === 'object', 'return should be an object for', item);
+		  out.push(Object.keys(reqs));
+    }
+	});
+
+  // console.log('returning', out);
 	return out;
+}
+
+function deduplicate(items) {
+  var uniques = {};
+  items.forEach(function(item) {
+    uniques[item] = item;
+  });
+  return Object.keys(uniques);
 }
 
 // returns object, for each module - array of paths
@@ -27,17 +52,16 @@ function outbound(modules) {
     modules = [modules];
   }
 
-  var uniques = {};
-  modules.forEach(function(item) {
-    uniques[item] = item;
-  });
-  modules = Object.keys(uniques);
-  // console.log('uniques', modules);
-
+  modules = deduplicate(modules);
+  
+  // console.log('getting outbound modules for', modules);
   var reqs = outboundLinks(modules);
-  console.assert(Array.isArray(reqs), 'could not get array for modules', modules);
-  console.assert(reqs.length === modules.length, 'returned wrong number of links for', modules);
+  // console.log('found reqs', reqs);
 
+  console.assert(Array.isArray(reqs), 'could not get array for modules', modules);
+  console.assert(reqs.length === modules.length, 'returned wrong number of links', reqs, 'for', modules);
+
+  // console.log('forming results');
   var result = {};
   reqs.forEach(function(req, index) {
     var moduleName = modules[index];
