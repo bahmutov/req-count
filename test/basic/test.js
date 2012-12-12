@@ -2,7 +2,9 @@ var sure = require('../../node_modules/gt/sure.js');
 var req = require('../../req-count');
 var check = require('../../node_modules/check-types');
 
-sure.init();
+sure.init({
+	report: 1
+});
 
 gt.module('basic tests');
 gt.test('basic', function () {
