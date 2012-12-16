@@ -6,10 +6,13 @@ var path = require('path');
 	args = optimist.usage("Find first level dependencies from js file.\nUsage: $0")
 			.default({
 				amd: false,
-				help: 0
-			}).alias('h', 'help')
+				help: 0,
+				output: ''
+			}).alias('h', 'help').alias('o', 'output')
 			.boolean("amd")
+			.string('output')
 			.describe('amd', 'look for AMD style define calls')
+			.describe('output', 'output json filename')
 			.argv;
 
 	if (!module.parent) {
@@ -29,4 +32,10 @@ var fullModules = args._.map(function (shortName) {
 });
 
 var reqs = req.outbound(fullModules);
-console.log(JSON.stringify(reqs, null, 2));
+var str = JSON.stringify(reqs, null, 2);
+console.log(str);
+if (args.output) {
+	var fs = require('fs');
+	fs.writeFileSync(args.output, str, 'utf8');
+	console.log('saved requirements to', args.output);
+}
