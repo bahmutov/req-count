@@ -26,7 +26,10 @@ function outboundLinks(modules) {
       global.define = function(deps) {
         if (Array.isArray(deps)) {
           var uniques = deduplicate(deps);
-          out.push(uniques);
+          var fullPaths = uniques.map(function (name) {
+            return path.resolve(name);
+          });
+          out.push(fullPaths);
         }
       };
 
@@ -40,7 +43,6 @@ function outboundLinks(modules) {
     }
 	});
 
-  // console.log('returning', out);
 	return out;
 }
 
@@ -95,7 +97,8 @@ function visit(request, parent) {
   var requires = detective(src);
 
   requires.forEach(function(item) {
-  	reqs[item] = item;
+    var fullPath = path.resolve(item);
+  	reqs[fullPath] = fullPath;
   });
 
   return reqs;
