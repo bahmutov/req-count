@@ -5,6 +5,10 @@ sure.init({
 	report: 1
 });
 
+req.init({
+	amd: true
+});
+
 gt.module('AMD syntax define tests');
 gt.test('basic', function () {
 	gt.equal(typeof req, 'object', 'req-count module exists');

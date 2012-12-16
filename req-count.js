@@ -5,7 +5,14 @@ var Module = require('module');
 var detective = require('detective');
 
 var out = [];
-var amd = true;
+var config = {
+  amd: true
+};
+
+function init(options) {
+  options = options || {};
+  config.amd = options.amd;
+}
 
 // returns an array of immediate reqs, even for a single argument
 function outboundLinks(modules) {
@@ -14,7 +21,7 @@ function outboundLinks(modules) {
 
 	out = [];
 	modules.forEach(function(item) {
-    if (amd) {
+    if (config.amd) {
       var fullName = path.resolve(item);
       global.define = function(deps) {
         if (Array.isArray(deps)) {
@@ -95,5 +102,6 @@ function visit(request, parent) {
 };
 
 module.exports = {
+  init: init,
 	outbound: outbound
 };
