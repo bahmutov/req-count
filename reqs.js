@@ -32,7 +32,13 @@ var fullModules = args._.map(function (shortName) {
 });
 
 var reqs = req.outbound(fullModules);
-var str = JSON.stringify(reqs, null, 2);
+console.assert(reqs, 'could not get outbound reqs');
+
+var counter = require('./src/count');
+var moduleCounts = counter.reqCount(reqs);
+console.assert(moduleCounts, 'could not get module counts');
+
+var str = JSON.stringify(moduleCounts, null, 2);
 console.log(str);
 if (args.output) {
 	var fs = require('fs');
