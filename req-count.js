@@ -20,15 +20,25 @@ function outboundLinks(modules) {
 	console.assert(Array.isArray(modules), modules, 'should be an array');
 
 	out = [];
-	modules.forEach(function(item) {
+	modules.forEach(function(moduleName) {
+    var fullName = path.resolve(moduleName);
+    console.assert(/\.js$/.test(fullName), 'module name', fullName, 'is not .js');
+    var moduleFolder = path.dirname(fullName);
+    console.assert(moduleFolder, 'could not get module name from', fullName);
+
+    function toFullJs(name) {
+      var reqPath = path.resolve(moduleFolder, name);
+      if (!/\.js$/.test(reqPath)) {
+        reqPath += '.js';
+      }
+      return reqPath;
+    }
+
     if (config.amd) {
-      var fullName = path.resolve(item);
       global.define = function(deps) {
         if (Array.isArray(deps)) {
           var uniques = deduplicate(deps);
-          var fullPaths = uniques.map(function (name) {
-            return path.resolve(name);
-          });
+          var fullPaths = uniques.map(toFullJs);
           out.push(fullPaths);
         }
       };
@@ -37,9 +47,10 @@ function outboundLinks(modules) {
       delete require.cache[require.resolve(fullName)];
       require(fullName);
     } else {
-		  var reqs = visit(item);
-		  console.assert(typeof reqs === 'object', 'return should be an object for', item);
-		  out.push(Object.keys(reqs));
+		  var reqs = visit(moduleName);
+		  console.assert(typeof reqs === 'object', 'return should be an object for', moduleName);
+      var fullReqs = reqs.map(toFullJs);
+		  out.push(fullReqs);
     }
 	});
 
@@ -95,13 +106,16 @@ function visit(request, parent) {
   // console.log(fn);
   var src = fs.readFileSync(fn);
   var requires = detective(src);
-
+  return requires;
+  /*
   requires.forEach(function(item) {
-    var fullPath = path.resolve(item);
-  	reqs[fullPath] = fullPath;
+    // var fullPath = path.resolve(item);
+  	// reqs[fullPath] = fullPath;
+    reqs[fullPath] = fullPath;
   });
 
   return reqs;
+  */
 };
 
 module.exports = {
