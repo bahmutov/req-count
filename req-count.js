@@ -103,19 +103,9 @@ function visit(request, parent) {
   if (!fs.existsSync(fn)) {
     return {};
   }
-  // console.log(fn);
   var src = fs.readFileSync(fn);
   var requires = detective(src);
   return requires;
-  /*
-  requires.forEach(function(item) {
-    // var fullPath = path.resolve(item);
-  	// reqs[fullPath] = fullPath;
-    reqs[fullPath] = fullPath;
-  });
-
-  return reqs;
-  */
 };
 
 module.exports = {

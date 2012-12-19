@@ -36,10 +36,11 @@ console.assert(reqs, 'could not get outbound reqs');
 // console.log(JSON.stringify(reqs, null, 2));
 
 var counter = require('./src/count');
-var moduleCounts = counter.reqCount(reqs);
-console.assert(moduleCounts, 'could not get module counts');
+// var moduleCounts = counter.reqCount(reqs);
+var moduleMetrics = counter.reqMetrics(reqs);
+console.assert(moduleMetrics, 'could not get module metrics');
 
-var str = JSON.stringify(moduleCounts, null, 2);
+var str = JSON.stringify(moduleMetrics, null, 2);
 console.log(str);
 if (args.output) {
 	var fs = require('fs');
