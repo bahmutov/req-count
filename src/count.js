@@ -62,12 +62,17 @@ function reqMetrics(reqs) {
 			console.assert(distance > 0, 'invalid distance between', req, 'and', moduleName);
 			return distance;
 		});
+		var distance = 0;
+		distances.forEach(function (d) {
+			distance += d;
+		});
 
 		metrics[req] = {
 			path: req,
 			connections: values,
 			connectionsCount: values.length,
-			distances: distances
+			distances: distances,
+			distance: distance
 		};
 	});
 	return metrics;
