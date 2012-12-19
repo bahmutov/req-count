@@ -73,6 +73,18 @@ function outbound(modules) {
   }
 
   modules = deduplicate(modules);
+
+  modules = modules.map(function (moduleName) {
+    if (!/\.js$/.test(moduleName)) {
+      moduleName += '.js';
+    }
+    return moduleName;
+  });
+
+  modules = modules.map(function (moduleName) {
+    var fullName = path.resolve(moduleName);
+    return fullName;
+  });
   
   // console.log('getting outbound modules for', modules);
   var reqs = outboundLinks(modules);
@@ -87,6 +99,7 @@ function outbound(modules) {
     var moduleName = modules[index];
     result[moduleName] = req;
   });
+  // console.log('results object', result);
   return result;
 }
 
