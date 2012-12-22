@@ -1,5 +1,5 @@
 var sure = require('../node_modules/gt/sure.js');
-var req = require('../req-count');
+var req = require('../src/req-count');
 
 sure.init({
 	report: 1

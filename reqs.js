@@ -43,7 +43,7 @@ var path = require('path');
 	}
 }());
 
-var req = require('./req-count');
+var req = require('./src/req-count');
 req.init(args);
 
 var fullModules = [];
@@ -85,7 +85,7 @@ Object.keys(moduleMetrics).forEach(function (item) {
 	]);
 });
 
-var reporter = require('./reporter');
+var reporter = require('./src/reporter');
 reporter.writeReportTables({
 	titles: ['filename', 'depends', 'score'],
 	metrics: metrics,

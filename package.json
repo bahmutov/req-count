@@ -1,6 +1,6 @@
 {
   "name": "req-count",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "description": "Module requirement counter, outbound and inbound",
   "author": "Gleb Bahmutov <gleb.bahmutov@gmail.com>",
   "repository": {
