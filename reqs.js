@@ -7,29 +7,56 @@ var path = require('path');
 			.default({
 				amd: false,
 				help: 0,
-				output: ''
-			}).alias('h', 'help').alias('o', 'output')
+				output: '',
+				input: []
+			}).alias('h', 'help').alias('o', 'output').alias('i', 'input')
 			.boolean("amd")
 			.string('output')
 			.describe('amd', 'look for AMD style define calls')
 			.describe('output', 'output json filename')
+			.describe('input', 'list of input files / patterns')
 			.argv;
 
 	if (!module.parent) {
-		if (args.h || args.help || !args._.length) {
+		if (args.h || args.help) {
 			optimist.showHelp();
 			console.log('current arguments\n', args);
 			process.exit(0);
 		}
+	}
+
+	if (args.input && !Array.isArray(args.input)) {
+		args.input = [args.input];
+	}
+
+	
+	if (!args.input || !Array.isArray(args.input) || !args.input.length) {
+		optimist.showHelp();
+		console.log('missing input files');
+		console.log('current arguments\n', args);
+		process.exit(0);
 	}
 }());
 
 var req = require('./req-count');
 req.init(args);
 
-var fullModules = args._.map(function (shortName) {
+var fullModules = [];
+
+var glob = require("glob");
+args.input.forEach(function (shortName) {
+	// console.log('looking for matches for', shortName);
+	var files = glob.sync(shortName);
+	// console.log('for', shortName, 'found matching', files);
+	fullModules = fullModules.concat(files);
+});
+
+fullModules = fullModules.map(function (shortName) {
 	return path.resolve(shortName);
 });
+
+// console.log(fullModules);
+// process.exit(0);
 
 var reqs = req.outbound(fullModules);
 console.assert(reqs, 'could not get outbound reqs');
