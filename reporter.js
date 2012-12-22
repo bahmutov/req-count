@@ -74,8 +74,8 @@ function writeReportTables(options) {
 		console.log('output filename', options.filename);
 	}
 
-	if (options.metrics.length === 1) {
-		log.warn('nothing to report, empty complexity array');
+	if (!options.metrics.length) {
+		console.warn('nothing to report, empty complexity array');
 		return;
 	}
 

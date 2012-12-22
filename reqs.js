@@ -60,7 +60,7 @@ fullModules = fullModules.map(function (shortName) {
 	return path.resolve(shortName);
 });
 
-// console.log(fullModules);
+//console.log(fullModules);
 // process.exit(0);
 
 var reqs = req.outbound(fullModules);

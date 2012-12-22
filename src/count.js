@@ -41,7 +41,7 @@ function moduleDistance(a, b) {
 	}
 	var folders = relative.split('\\');
 	var distance = folders.length;
-	console.log('from', a, 'to', b, 'relative', folders, distance);
+	// console.log('from', a, 'to', b, 'relative', folders, distance);
 	return distance;
 }
 

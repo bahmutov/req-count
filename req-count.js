@@ -18,16 +18,26 @@ function init(options) {
 function outboundLinks(modules) {
 	// console.log('computing outbound links starting with', moduleName);
 	console.assert(Array.isArray(modules), modules, 'should be an array');
+  // console.log('modules', modules);
+  // process.exit(0);
 
 	out = [];
 	modules.forEach(function(moduleName) {
-    var fullName = path.resolve(moduleName);
+    //var fullName = path.resolve(moduleName);
+    // console.log('for', moduleName, 'full name', fullName);
+
+    var fullName = moduleName;
+    // console.log('loading dependencies for', fullName);
     console.assert(/\.js$/.test(fullName), 'module name', fullName, 'is not .js');
     var moduleFolder = path.dirname(fullName);
     console.assert(moduleFolder, 'could not get module name from', fullName);
+    // console.log('module folder', moduleFolder);
 
-    function toFullJs(name) {
-      var reqPath = path.resolve(moduleFolder, name);
+    function toFullJs(name, baseName) {
+      var folder = path.dirname(baseName);
+      var reqPath = path.resolve(folder, name);
+      // console.log('from folder', folder, 'name', name, 'full path', reqPath);
+
       if (!/\.js$/.test(reqPath)) {
         reqPath += '.js';
       }
@@ -36,9 +46,13 @@ function outboundLinks(modules) {
 
     if (config.amd) {
       global.define = function(deps) {
+        // console.log('loading modules', deps, 'from file', fullName);
         if (Array.isArray(deps)) {
           var uniques = deduplicate(deps);
-          var fullPaths = uniques.map(toFullJs);
+          var fullPaths = uniques.map(function (depName) {
+            return toFullJs(depName, fullName);
+          });
+          // console.log('out =', out);
           out.push(fullPaths);
         }
       };
@@ -49,7 +63,9 @@ function outboundLinks(modules) {
     } else {
 		  var reqs = visit(moduleName);
 		  console.assert(typeof reqs === 'object', 'return should be an object for', moduleName);
-      var fullReqs = reqs.map(toFullJs);
+      var fullReqs = reqs.map(function (reqName) {
+        return toFullJs(reqName, moduleName);
+      });
 		  out.push(fullReqs);
     }
 	});
