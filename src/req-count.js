@@ -14,14 +14,14 @@ function init(options) {
   config.amd = options.amd;
 }
 
-// returns an array of immediate reqs, even for a single argument
+// returns an object of immediate reqs, even for a single argument
 function outboundLinks(modules) {
 	// console.log('computing outbound links starting with', moduleName);
 	console.assert(Array.isArray(modules), modules, 'should be an array');
   // console.log('modules', modules);
   // process.exit(0);
 
-	out = [];
+	var out = {};
 	modules.forEach(function(moduleName) {
     //var fullName = path.resolve(moduleName);
     // console.log('for', moduleName, 'full name', fullName);
@@ -44,6 +44,7 @@ function outboundLinks(modules) {
       return reqPath;
     }
 
+    out[fullName] = [];
     if (config.amd) {
       global.define = function(deps) {
         // console.log('loading modules', deps, 'from file', fullName);
@@ -53,7 +54,7 @@ function outboundLinks(modules) {
             return toFullJs(depName, fullName);
           });
           // console.log('out =', out);
-          out.push(fullPaths);
+          out[fullName] = fullPaths;
         }
       };
 
@@ -66,7 +67,7 @@ function outboundLinks(modules) {
       var fullReqs = reqs.map(function (reqName) {
         return toFullJs(reqName, moduleName);
       });
-		  out.push(fullReqs);
+		  out[fullName] = fullReqs;
     }
 	});
 
@@ -106,10 +107,12 @@ function outbound(modules) {
   var reqs = outboundLinks(modules);
   // console.log('found reqs', reqs);
 
-  console.assert(Array.isArray(reqs), 'could not get array for modules', modules);
-  console.assert(reqs.length === modules.length, 'returned wrong number of links', reqs, 'for', modules);
+  console.assert(reqs, 'could not get dependencies for modules', modules);
+  console.assert(Object.keys(reqs).length === modules.length, 
+    'returned wrong number of links', reqs, 'for', modules);
 
   // console.log('forming results');
+  /*
   var result = {};
   reqs.forEach(function(req, index) {
     var moduleName = modules[index];
@@ -117,6 +120,8 @@ function outbound(modules) {
   });
   // console.log('results object', result);
   return result;
+  */
+  return reqs;
 }
 
 // only immediate requires are returned

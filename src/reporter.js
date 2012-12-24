@@ -68,7 +68,7 @@ function writeReportTables(options) {
 	options = options || {};
 	console.assert(options.titles, 'null column titles');
 	console.assert(Array.isArray(options.metrics), "metrics should be an array, not", options.metrics);
-	console.assert(options.metrics.length >= 1, "invalid complexity length", options.metrics.length);
+	console.assert(options.metrics.length >= 0, "invalid complexity length", options.metrics.length);
 	if (options.filename) {
 		check.verifyString(options.filename, "output filename " + options.filename + " should be a string");
 		console.log('output filename', options.filename);

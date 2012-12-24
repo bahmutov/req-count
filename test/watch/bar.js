@@ -1,1 +1,1 @@
-define(['./foo']);
+define(['./foo', './zee']);
