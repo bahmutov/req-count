@@ -1,0 +1,81 @@
+{
+  "C:\\git\\req-count\\test\\amd\\bar.js": {
+    "path": "C:\\git\\req-count\\test\\amd\\bar.js",
+    "connections": [],
+    "connectionsCount": 0,
+    "distances": [],
+    "distance": 0
+  },
+  "C:\\git\\req-count\\test\\amd\\folderA\\a.js": {
+    "path": "C:\\git\\req-count\\test\\amd\\folderA\\a.js",
+    "connections": [
+      "C:\\git\\req-count\\test\\amd\\foo.js"
+    ],
+    "connectionsCount": 1,
+    "distances": [
+      2
+    ],
+    "distance": 2
+  },
+  "C:\\git\\req-count\\test\\amd\\folderB\\b.js": {
+    "path": "C:\\git\\req-count\\test\\amd\\folderB\\b.js",
+    "connections": [
+      "C:\\git\\req-count\\test\\amd\\foo.js",
+      "C:\\git\\req-count\\test\\amd\\folderA\\a.js"
+    ],
+    "connectionsCount": 2,
+    "distances": [
+      2,
+      3
+    ],
+    "distance": 5
+  },
+  "C:\\git\\req-count\\test\\amd\\foo.js": {
+    "path": "C:\\git\\req-count\\test\\amd\\foo.js",
+    "connections": [
+      "C:\\git\\req-count\\test\\amd\\bar.js"
+    ],
+    "connectionsCount": 1,
+    "distances": [
+      1
+    ],
+    "distance": 1
+  },
+  "C:\\git\\req-count\\test\\amd\\multiples.js": {
+    "path": "C:\\git\\req-count\\test\\amd\\multiples.js",
+    "connections": [
+      "C:\\git\\req-count\\test\\amd\\foo.js",
+      "C:\\git\\req-count\\test\\amd\\bar.js"
+    ],
+    "connectionsCount": 2,
+    "distances": [
+      1,
+      1
+    ],
+    "distance": 2
+  },
+  "C:\\git\\req-count\\test\\amd\\two.js": {
+    "path": "C:\\git\\req-count\\test\\amd\\two.js",
+    "connections": [
+      "C:\\git\\req-count\\test\\amd\\bar.js",
+      "C:\\git\\req-count\\test\\amd\\foo.js"
+    ],
+    "connectionsCount": 2,
+    "distances": [
+      1,
+      1
+    ],
+    "distance": 2
+  },
+  "C:\\git\\req-count\\test\\amd\\zoo.js": {
+    "path": "C:\\git\\req-count\\test\\amd\\zoo.js",
+    "connections": [
+      "C:\\git\\req-count\\test\\amd\\bar.js"
+    ],
+    "connectionsCount": 1,
+    "distances": [
+      1
+    ],
+    "distance": 1
+  }
+}
