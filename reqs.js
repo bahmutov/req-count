@@ -12,8 +12,10 @@ var fs = require('fs');
 				input: [],
 				color: true,
 				sort: 2,
-				watch: false
+				watch: false,
+				json: ''
 			}).alias('h', 'help').alias('o', 'output').alias('i', 'input')
+			.alias('j', 'json').string('json').describe('output json report filename')
 			.boolean('amd')
 			.string('output')
 			.boolean('color')
@@ -97,7 +99,12 @@ function reportDependencies(fullModules) {
 	console.assert(moduleMetrics, 'could not get module metrics');
 
 	var str = JSON.stringify(moduleMetrics, null, 2);
-	console.log(str);
+	if (args.json) {
+		fs.writeFileSync(args.json, str, 'utf8');
+		console.log('saved json report to', args.json);
+	}
+	// console.log(str);
+
 
 	// write detailed report table to a file/console
 	var metrics = [];
