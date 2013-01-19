@@ -1,33 +1,31 @@
+var optimist = require("optimist");
 
 function getArguments() {
-	var optimist = require("optimist");
 	var args = optimist.usage("Find first level dependencies from js file.\nUsage: $0")
-			.default({
-				amd: false,
-				help: 0,
-				output: '',
-				input: [],
-				color: true,
-				sort: 2,
-				watch: false,
-				json: ''
-			}).alias('h', 'help').alias('o', 'output').alias('i', 'input')
-			.alias('j', 'json').string('json').describe('output json report filename')
-			.boolean('amd')
-			.string('output')
-			.boolean('color')
-			.boolean('watch')
-			.describe('amd', 'look for AMD style define calls')
-			.describe('output', 'output json filename')
-			.describe('input', 'list of input files / patterns')
-			.describe('color', 'use terminal colors in the output')
-			.describe('sort', 'sort results by column, use ! to reverse the order')
-			.describe('watch', 'keep watching the files, report stas on any change')
-			.argv;
+	.default({
+		amd: false,
+		help: 0,
+		output: '',
+		input: [],
+		colors: true,
+		sort: 1,
+		watch: false,
+		json: ''
+	}).alias('h', 'help').alias('o', 'output').alias('i', 'input')
+	.alias('j', 'json').string('json').describe('output json report filename')
+	.boolean('amd').describe('amd', 'look for AMD style define calls')
+	.string('output').describe('output', 'output json filename')
+	.boolean('colors').describe('colors', 'use terminal colors in the output')
+	.boolean('watch').describe('watch', 'keep watching the files, report stas on any change')
+	.describe('input', 'list of input files / patterns')
+	.describe('sort', 'sort results by column, use ! to reverse the order')
+	.argv;
+	return args;
 };
 
 function formArguments() {
 	var args = getArguments();
+	console.assert(args, 'could not get command line arguments');
 
 	if (!module.parent) {
 		if (args.h || args.help) {

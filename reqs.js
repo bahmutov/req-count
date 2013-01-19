@@ -1,105 +1,58 @@
-var path = require('path');
-var fs = require('fs');
-
-var args = require('./src/arguments').run();
+var utils = require('./src/utils');
 
 var req = require('./src/req-count');
-req.init(args);
-
-function discoverSourceFiles() {
-	var glob = require("glob");
-
-	var filenames = [];
-	args.input.forEach(function (shortName) {
-		var files = glob.sync(shortName);
-		filenames = filenames.concat(files);
-	});
-
-	filenames = filenames.map(function (shortName) {
-		return path.resolve(shortName);
-	});
-	return filenames;
+if (!module.parent) {
+	(function () {
+		var args = require('./src/arguments').run();
+		run(args);
+	})();
 }
 
-var fullModules = discoverSourceFiles();
-console.assert(Array.isArray(fullModules), 'could not discover source files');
+function run(options) {
+	options = options || {};
+	console.assert(options.input, 'expect input array with source files or patterns');
+	req.init(options);
 
-function filterNonExistingFiles(filenames) {
-	console.assert(Array.isArray(filenames), 'expected an array of filenames');
-	var result = filenames.filter(function (filename) {
-		return fs.existsSync(filename);
-	});
-	return result;
-}
+	var fullModules = utils.discoverSourceFiles(options.input);
+	console.assert(Array.isArray(fullModules), 'could not discover source files');
 
-function reportDependencies(fullModules) {
-	console.assert(Array.isArray(fullModules), 'expected an array of filenames');
-	fullModules = filterNonExistingFiles(fullModules);
-	// console.log(fullModules);
-	// process.exit(0);
+	function reportDependencies(fullModules) {
+		console.assert(Array.isArray(fullModules), 'expected an array of filenames');
+		fullModules = utils.filterNonExistingFiles(fullModules);
 
-	var reqs = req.outbound(fullModules);
-	console.assert(reqs, 'could not get outbound reqs');
-	// console.log(JSON.stringify(reqs, null, 2));
+		var reqs = req.outbound(fullModules);
+		console.assert(reqs, 'could not get outbound reqs');
 
-	var counter = require('./src/count');
-	// var moduleCounts = counter.reqCount(reqs);
-	var moduleMetrics = counter.reqMetrics(reqs);
-	console.assert(moduleMetrics, 'could not get module metrics');
+		var counter = require('./src/count');
+		var moduleMetrics = counter.reqMetrics(reqs);
+		console.assert(moduleMetrics, 'could not get module metrics');
 
-	var str = JSON.stringify(moduleMetrics, null, 2);
-	if (args.json) {
-		fs.writeFileSync(args.json, str, 'utf8');
-		console.log('saved json report to', args.json);
+		if (options.json) {
+			writeReqJsonReport(moduleMetrics, options.json);
+		}
+
+		utils.writeDetailedReport(moduleMetrics, options);
+		utils.displaySummary(moduleMetrics);
 	}
-	// console.log(str);
 
+	reportDependencies(fullModules);
 
-	// write detailed report table to a file/console
-	var metrics = [];
-	Object.keys(moduleMetrics).forEach(function (item) {
-		var reqs = moduleMetrics[item];
-		metrics.push([
-			reqs.path,
-			reqs.connections.length,
-			reqs.distance
-		]);
-	});
+	function watchAndRecomputeOnChange(fullModules, options) {
+		if (options.watch && fullModules.length) {
+			console.log('watching', fullModules.length, 'files...');
+			var watch = require('nodewatch');
+			fullModules.forEach(function (filename) {
+				watch.add(filename);
+			});
+			watch.onChange(function (file, prev, curr, action){
+				console.log('file', file, 'changed', action);
+				fullModules = discoverSourceFiles(options.input);
+				reportDependencies(fullModules);
+			});
+		}
+	}
 
-	var reporter = require('./src/reporter');
-	reporter.writeReportTables({
-		titles: ['filename', 'depends', 'score'],
-		metrics: metrics,
-		filename: args.output,
-		colors: args.colors
-	});
-
-	// compute and display summary
-	var totalFiles = 0;
-	var totalDeps = 0;
-	var totalScore = 0;
-	Object.keys(moduleMetrics).forEach(function (item) {
-		var reqs = moduleMetrics[item];
-		totalFiles += 1;
-		totalDeps += reqs.connections.length;
-		totalScore += reqs.distance;
-	});
-	var averageDeps = (totalFiles > 0 ? totalDeps / totalFiles : 0);
-	console.log(totalFiles + ' files');
-	console.log(averageDeps + ' dependencies per file on average');
-	console.log(totalScore + ' total score');
+	watchAndRecomputeOnChange(fullModules, options);	
 }
 
-reportDependencies(fullModules);
-if (args.watch && fullModules.length) {
-	console.log('watching these files...');
-	var watch = require('nodewatch');
-	fullModules.forEach(function (filename) {
-		watch.add(filename);
-	});
-	watch.onChange(function (file, prev, curr, action){
-		console.log('file', file, 'changed', action);
-		fullModules = discoverSourceFiles();
-		reportDependencies(fullModules);
-	});
-}
+module.exports.run = run;

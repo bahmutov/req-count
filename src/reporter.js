@@ -80,8 +80,8 @@ function writeReportTables(options) {
 	}
 
 	(function () {
-		var sortingColumn = args.sort;
-		if (sortingColumn) {
+		var sortingColumn = options.sort;
+		if (typeof sortingColumn === 'number') {
 			var reverseSort = false;
 			var comparison = function(a, b) {
 				var first = a[sortingColumn];
