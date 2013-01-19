@@ -101,7 +101,7 @@ function writeReportTables(options) {
 			check.verifyNumber(sortingColumn, 'invalid sorting column ' + sortingColumn);
 			var maxColumn = options.titles.length;
 			console.assert(sortingColumn >= 0 && sortingColumn < maxColumn, 'invalid sorting column', sortingColumn);
-			console.log('sorting metrics by column', sortingColumn);
+			
 			options.metrics.sort(comparison);
 			if (reverseSort) {
 				options.metrics.reverse();
@@ -131,15 +131,20 @@ function writeReportTables(options) {
 
 			var text = table.toString() + '\n' + info;
 			fs.writeFileSync(reportFilename, text, "utf-8");
-			console.log("Saved report text", reportFilename);
+			if (!options.minimal) {
+				console.log("Saved report text", reportFilename);
+			}
 		}());
 	}
 
 	(function () {
-		console.log('making table, colors?', options.colors, 'complexity limit', options.limit);
+		// console.log('making table, colors?', options.colors, 'complexity limit', options.limit);
 		var table = makeTable(titles, rows, options.colors, options.limit);
 		console.assert(table, 'could not make table, colors?', options.colors);
-		var text = table.toString() + '\n' + info;
+		var text = table.toString();
+		if (!options.minimal) {
+			text += '\n' + info;
+		}
 		console.log(text);
 	}());
 }

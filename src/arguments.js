@@ -10,13 +10,15 @@ function getArguments() {
 		colors: true,
 		sort: 1,
 		watch: false,
-		json: ''
+		json: '',
+		minimal: false
 	}).alias('h', 'help').alias('o', 'output').alias('i', 'input')
 	.alias('j', 'json').string('json').describe('output json report filename')
 	.boolean('amd').describe('amd', 'look for AMD style define calls')
 	.string('output').describe('output', 'output json filename')
 	.boolean('colors').describe('colors', 'use terminal colors in the output')
 	.boolean('watch').describe('watch', 'keep watching the files, report stas on any change')
+	.boolean('minimal').describe('minimal', 'skip explanations output')
 	.describe('input', 'list of input files / patterns')
 	.describe('sort', 'sort results by column, use ! to reverse the order')
 	.argv;
@@ -42,7 +44,6 @@ function formArguments() {
 
 	if (!args.input || !Array.isArray(args.input) || !args.input.length) {
 		if (args._.length > 0) {
-			console.log('using default command line input');
 			args.input = args._;
 		} else {
 			optimist.showHelp();

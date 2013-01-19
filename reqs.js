@@ -28,11 +28,11 @@ function run(options) {
 		console.assert(moduleMetrics, 'could not get module metrics');
 
 		if (options.json) {
-			writeReqJsonReport(moduleMetrics, options.json);
+			writeReqJsonReport(moduleMetrics, options.json, options.minimal);
 		}
 
-		utils.writeDetailedReport(moduleMetrics, options);
-		utils.displaySummary(moduleMetrics);
+		utils.writeDetailedReport(moduleMetrics, options, options.minimal);
+		utils.displaySummary(moduleMetrics, options.minimal);
 	}
 
 	reportDependencies(fullModules);

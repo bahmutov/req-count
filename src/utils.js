@@ -51,11 +51,12 @@ function writeDetailedReport(moduleMetrics, options) {
 		metrics: metrics,
 		filename: options.output,
 		colors: options.colors,
-		sort: options.sort
+		sort: options.sort,
+		minimal: options.minimal
 	});
 }
 
-function displaySummary(moduleMetrics) {
+function displaySummary(moduleMetrics, minimal) {
 	var totalFiles = 0;
 	var totalDeps = 0;
 	var totalScore = 0;
@@ -66,9 +67,14 @@ function displaySummary(moduleMetrics) {
 		totalScore += reqs.distance;
 	});
 	var averageDeps = (totalFiles > 0 ? totalDeps / totalFiles : 0);
-	console.log(totalFiles + ' file(s)');
-	console.log(averageDeps.toFixed(1) + ' dependencies per file on average');
-	console.log(totalScore + ' total score');
+	if (minimal) {
+		console.log(totalFiles + ' file(s), ' + averageDeps.toFixed(1) + ' average deps, ' +
+			totalScore + ' total score');
+	} else {
+		console.log(totalFiles + ' file(s)');
+		console.log(averageDeps.toFixed(1) + ' dependencies per file on average');
+		console.log(totalScore + ' total score');
+	}
 }
 
 module.exports = {
