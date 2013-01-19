@@ -1,6 +1,6 @@
 {
   "name": "req-count",
-  "version": "0.0.6",
+  "version": "0.0.7",
   "description": "Module requirement counter, outbound and inbound",
   "author": "Gleb Bahmutov <gleb.bahmutov@gmail.com>",
   "repository": {
@@ -10,6 +10,7 @@
   "keywords": [
     "js", "javascript"
   ],
+  "main": "./reqs.js",
   "dependencies": {
     "optimist": "*",
     "check-types": "*",
