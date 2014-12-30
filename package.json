@@ -8,20 +8,21 @@
     "url": "https://github.com/bahmutov/req-count.git"
   },
   "keywords": [
-    "js", "javascript"
+    "js",
+    "javascript"
   ],
   "main": "./reqs.js",
   "dependencies": {
-    "optimist": "*",
     "check-types": "*",
+    "cli-table": "*",
+    "colors": "*",
     "detective": "*",
     "glob": "*",
-    "colors": "*",
-    "cli-table": "*",
-    "nodewatch": "*"
+    "nodewatch": "0.3.2",
+    "optimist": "*"
   },
   "devDependencies": {
-      "gt": "*"
+    "gt": "*"
   },
   "engines": {
     "node": ">= 0.8.0"
